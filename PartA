@@ -41,7 +41,7 @@ disp(num2str(entropy));
 huffman_codes_double = cellfun(@double, huffman_dict(:, 2), 'UniformOutput', false);
 % Create a vector of lengths of Huffman codes
 huffman_code_lengths = cellfun(@length, huffman_codes_double);
-mean_length = dot(huffman_code_lengths, normalized_probabilities);
+mean_length = dot(huffman_code_lengths, appearance_probabilities);
 disp('Mean Length of Huffman Encoding:');
 disp(num2str(mean_length));
 
