@@ -6,9 +6,9 @@ min_value = -3.5;
 max_value = 3.5;
 
 % Questions 2, 4
-for p = 5:5:10
+for p = 7:5:12
     for i = 1:3
-        [a_quantized, y, ~] = dpcm_encoder(x, p, i, min_value, max_value);
+        [a_quantized, y, y_hat, y_hat_prediction] = dpcm_encoder(x, p, i, min_value, max_value);
 
         figure
         title(['Prediction error and reconstructed signal for p=', num2str(p), ' and N=', num2str(i)]);
@@ -31,31 +31,38 @@ for p = 5:5:10
 end
 
 % Question 3
+% MSE matrix initialization
 mse_matrix = zeros(6, 3); 
 
+% Loop over each p and N value
 for p = 5:10
     for N = 1:3
-        [~, ~, y_hat_prediction] = dpcm_encoder(x, p, N, min_value, max_value);
+        [~, ~, ~, y_hat_prediction] = dpcm_encoder(x, p, N, min_value, max_value);
         currentMSE = mean((x - y_hat_prediction).^2);  % Calculate current MSE
         mse_matrix(p - 4, N) = currentMSE;  % Assign to the matrix
     end
-    disp(a_quantized);
 end
 
-num_p = length((5:10));
-num_N = length((1:3));
-% Flatten the mseMatrix to a vector
-all_mse = reshape(mse_matrix', [], 1);
-% Prepare N values for plotting
-all_N = repmat((1:3), 1, num_p);
+% Define a set of colors
+colors = [1, 0, 0; % Red
+          0, 1, 0; % Green
+          0, 0, 1; % Blue
+          1, 1, 0; % Yellow
+          1, 0, 1; % Magenta
+          0, 1, 1]; % Cyan
 
-figure
-    plot(all_N, all_mse, '.', 'MarkerSize', 15);
-    title(['MSE (E[y^2]) for different values of p']);
-    xlabel('N (Quantization Bits)'); 
-    ylabel('MSE');
+figure;
+hold on;
 
-    legend_str = arrayfun(@(p) sprintf('p = %d', p), (5:10), 'UniformOutput', false);
-    legend(legend_str, 'Location', 'best');
+% Loop over each p value
+for p = 5:10
+    plot(1:3, mse_matrix(p - 4, :), 'Color', colors(p - 4, :), 'Marker', '.', 'MarkerSize', 15);
+end
 
-    xticks((1:3));
+title('MSE (E[y^2]) for different values of p');
+xlabel('N (Quantization Bits)'); 
+xticks(1:3);
+ylabel('MSE');
+legend('p = 5', 'p = 6', 'p = 7', 'p = 8', 'p = 9', 'p = 10');
+
+hold off;
