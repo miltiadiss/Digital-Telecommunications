@@ -1,4 +1,4 @@
-function y_hat = my_quantizer(y, N, min_value, max_value)
+function [y_hat] = my_quantizer(y, N, min_value, max_value)
 
     % Quantization step
     delta = (max_value - min_value) / (2^N - 1);
