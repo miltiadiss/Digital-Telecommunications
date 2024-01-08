@@ -6,13 +6,12 @@ min_value = -3.5;
 max_value = 3.5;
 
 % Questions 2, 4
-for p = 7:5:12
-    for i = 1:3
-        [a_quantized, y, y_hat, y_hat_prediction] = dpcm_encoder(x, p, i, min_value, max_value);
+for p = 5:5:10
+    for N = 1:3
+        [a_quantized, y, y_hat, y_hat_prediction] = dpcm_encoder(x, p, N, min_value, max_value);
 
         figure
-        title(['Prediction error and reconstructed signal for p=', num2str(p), ' and N=', num2str(i)]);
-        %legend('x', 'y');
+        title(['Prediction error and reconstructed signal for p=', num2str(p), ' and N=', num2str(N)]);
         
         subplot(3,1,1); % Create a subplot for signal y
         plot(y);
@@ -36,9 +35,12 @@ mse_matrix = zeros(6, 3);
 
 % Loop over each p and N value
 for p = 5:10
+    result_string = strcat(' p = ', num2str(p));
+    disp(result_string);
     for N = 1:3
-        [~, ~, ~, y_hat_prediction] = dpcm_encoder(x, p, N, min_value, max_value);
-        currentMSE = mean((x - y_hat_prediction).^2);  % Calculate current MSE
+        [a_quantized, y, ~, ~] = dpcm_encoder(x, p, N, min_value, max_value);
+        disp(a_quantized);
+        currentMSE = mean(y.^2);  % Calculate current MSE
         mse_matrix(p - 4, N) = currentMSE;  % Assign to the matrix
     end
 end
