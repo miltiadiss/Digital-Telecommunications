@@ -1,21 +1,30 @@
 function [y_hat] = my_quantizer(y, N, min_value, max_value)
 
     % Quantization step
-    delta = (max_value - min_value) / (2^N - 1);
-
+    delta = (max_value - min_value)/ 2^N;
+    
     % Calculation of centers of quantization area
-    centers = min_value + delta/2 : delta : max_value - delta/2;
-
-    % Pre-allocate y_hat
-    y_hat = zeros(size(y));
+    centers = zeros(2^N, 1);
+    centers(1) = max_value - delta/2;
+    centers(2^N) = min_value + delta/2;
+    for i = 2:2^N - 1
+        centers(i) = centers(i - 1) - delta;
+    end
     
     % Process each element in y
-    for i = 1:length(y)
-        % Limiting the dynamic range of the current element
-        y_clipped = min(max(y(i), min_value), max_value);
-        % Calculating the area to which the current element belongs
-        [~, index] = min(abs(y_clipped - centers));
-        % Mapping the current element to the center of the respective area
-        y_hat(i) = centers(index);
+    % Limiting the dynamic range of the current element
+    if y < min_value
+        y = min_value;
+    end
+
+    if y > max_value
+        y = max_value;
+    end
+
+    %Create quantized input signal
+    for i = 1: 2^N
+        if((y <= centers(i) + delta/2) && (y >= centers(i) - delta/2))
+            y_hat = centers(i);
+        end
     end
 end
