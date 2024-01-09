@@ -5,27 +5,19 @@ x = data.t;
 min_value = -3.5;
 max_value = 3.5;
 
-% Questions 2, 4
+% Question 2
 for p = 5:5:10
     for N = 1:3
-        [a_quantized, y, y_hat, y_hat_prediction] = dpcm_encoder(x, p, N, min_value, max_value);
+        [~, ~, y, ~, ~] = dpcm_encoder(x, p, N, min_value, max_value);
 
-        figure
-        title(['Prediction error and reconstructed signal for p=', num2str(p), ' and N=', num2str(N)]);
+        figure;
+        plot(x, 'b');
+        hold on;
+        plot(y, 'r');
+        hold off;
         
-        subplot(3,1,1); % Create a subplot for signal y
-        plot(y);
-        xlabel('Prediction Error');
-
-        subplot(3,1,2); % Create a subplot for signal x
-        plot(x);
-        xlabel('Initial Signal');
-
-        x_reconstructed = dpcm_decoder(y_hat, p, a_quantized);
-
-        subplot(3,1,3); % Create a subplot for signal x_recondtructed
-        plot(x_reconstructed);
-        xlabel('Reconstructed Signal');
+        title(['Prediction error and initial signal for p=', num2str(p), ' and N=', num2str(N)]);
+        legend('Initial Signal', 'Prediction Error');
     end
 end
 
@@ -38,8 +30,8 @@ for p = 5:10
     result_string = strcat(' p = ', num2str(p));
     disp(result_string);
     for N = 1:3
-        [a_quantized, y, ~, ~] = dpcm_encoder(x, p, N, min_value, max_value);
-        disp(a_quantized);
+        [~, a, y, ~, ~] = dpcm_encoder(x, p, N, min_value, max_value);
+        disp(a);
         currentMSE = mean(y.^2);  % Calculate current MSE
         mse_matrix(p - 4, N) = currentMSE;  % Assign to the matrix
     end
@@ -68,3 +60,21 @@ ylabel('MSE');
 legend('p = 5', 'p = 6', 'p = 7', 'p = 8', 'p = 9', 'p = 10');
 
 hold off;
+
+% Question 4
+for p = 5:5:10
+    for N = 1:3
+        [a_quantized, ~, ~, y_hat, ~] = dpcm_encoder(x, p, N, min_value, max_value);
+        x_reconstructed = dpcm_decoder(y_hat, p, a_quantized);
+
+        figure;
+        subplot(2,1,1); 
+        plot(x);
+        title(['Reconstructed signal and initial signal for p=', num2str(p), ' and N=', num2str(N)]);
+        xlabel('Initial Signal');
+
+        subplot(2,1,2); 
+        plot(x_reconstructed);
+        xlabel('Reconstructed Signal');
+    end
+end
