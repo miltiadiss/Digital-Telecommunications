@@ -99,11 +99,11 @@ for p = 5:5:10
 
             % Plot the initial signal for subset k
             subplot(2, numSubsets, k); 
-            plot(subsets{k});
+            plot((startIdx:endIdx), subsets{k});
 
             % Plot the reconstructed signal for subset k
             subplot(2, numSubsets, k + numSubsets); 
-            plot(x_reconstructed);
+            plot((startIdx:endIdx), x_reconstructed);
         end
     end
 end
